@@ -26,7 +26,7 @@ import com.google.gson.JsonParser;
  */
 public class App {
 	
-	public static void main(String[] args) throws IOException {
+	public static SearchResponse searchElastic() throws IOException {
 		RestHighLevelClient client = new RestHighLevelClient(
 				RestClient.builder(new HttpHost("192.168.0.100", 9200, "http")));
 
@@ -45,8 +45,9 @@ public class App {
 		searchSourceBuilder.query(matchQueryBuilder);
 		searchRequest.source(searchSourceBuilder);
 		
+		SearchResponse response=null;
 		try {
-			SearchResponse response = client.search(searchRequest,RequestOptions.DEFAULT);
+			response = client.search(searchRequest,RequestOptions.DEFAULT);
 			System.out.println(response.status());
 			
 			SearchHit[] searchHits = response.getHits().getHits();
@@ -57,7 +58,7 @@ public class App {
 				JsonParser jsonParser = new JsonParser();
 				JsonElement jsonTree = jsonParser.parse(hit.getSourceAsString());
 				
-				System.out.println(hit.getScore()+"  "+jsonTree.getAsJsonObject().get("builder").getAsString());
+				//System.out.println(hit.getScore()+"  "+jsonTree.getAsJsonObject().get("builder").getAsString());
 				
 
 			}
@@ -69,5 +70,7 @@ public class App {
 
 
 		client.close();
+		
+		return response;
 	}
 }

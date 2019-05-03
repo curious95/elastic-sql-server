@@ -15,7 +15,7 @@ public class DataBaseFetcer {
 	static Properties prop = new Properties();
 	// Connect to your database.
 	// Replace server name, username, and password with your credentials
-	public static void main(String[] args) {
+	public static ResultSet getDB(int offset) {
 
 		try (InputStream input = new FileInputStream("../doc.properties")) {
 
@@ -41,7 +41,7 @@ public class DataBaseFetcer {
 				Statement statement = connection.createStatement();) {
 
 			// Create and execute a SELECT SQL statement.
-			String selectSql = "SELECT TOP 10 * from "+prop.getProperty("tb");
+			String selectSql = "SELECT * from "+prop.getProperty("tb")+" ORDER BY "+prop.getProperty("mc")+" OFFSET "+offset+" ROWS FETCH NEXT 10 ROWS ONLY";
 			resultSet = statement.executeQuery(selectSql);
 
 			// Print results from select statement
@@ -51,5 +51,7 @@ public class DataBaseFetcer {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		return resultSet;
 	}
 }
