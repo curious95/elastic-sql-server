@@ -24,9 +24,9 @@ import com.google.gson.JsonParser;
  * Hello world!
  *
  */
-public class App {
+public class esTester {
 	
-	public static SearchResponse searchElastic(String name) throws IOException {
+	public static void main(String[] args) throws IOException {
 		RestHighLevelClient client = new RestHighLevelClient(
 				RestClient.builder(new HttpHost("192.168.0.100", 9200, "http")));
 
@@ -34,7 +34,7 @@ public class App {
 
 		
 		
-		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("name", name); 
+		MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("name", "Lady Roxanne"); 
 		matchQueryBuilder.fuzziness(Fuzziness.AUTO);
 		matchQueryBuilder.prefixLength(0); 
 		matchQueryBuilder.maxExpansions(100);
@@ -58,8 +58,7 @@ public class App {
 				JsonParser jsonParser = new JsonParser();
 				JsonElement jsonTree = jsonParser.parse(hit.getSourceAsString());
 				
-				//System.out.println(hit.getScore()+"   "+jsonTree.getAsJsonObject().get("name")+"  "+jsonTree.getAsJsonObject().get("builder").getAsString());
-				
+				System.out.println(hit.getScore()+"   "+jsonTree.getAsJsonObject().get("name").getAsString()+"  "+jsonTree.getAsJsonObject().get("builder").getAsString()+"");
 				
 
 			}
@@ -71,7 +70,5 @@ public class App {
 
 
 		client.close();
-		
-		return response;
-	}
+			}
 }
