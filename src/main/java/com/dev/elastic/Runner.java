@@ -25,8 +25,10 @@ public class Runner {
 
 		DataBaseFetcer df = new DataBaseFetcer();
 		List<Object[]> records=new ArrayList<Object[]>();
-		for (int i = 1000; i < 100000; i += 1000) {
+		for (int i = 1000; i < 114960; i += 1000) {
 
+			System.out.println("Offset : "+i);
+			
 			try {
 				records  = df.getDB(i);
 				

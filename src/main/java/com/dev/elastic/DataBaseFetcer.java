@@ -61,6 +61,7 @@ public class DataBaseFetcer {
 				}
 				records.add(arr);
 			}
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
