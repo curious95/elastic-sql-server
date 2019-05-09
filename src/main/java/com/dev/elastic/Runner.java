@@ -45,7 +45,7 @@ public class Runner {
 				
 			} catch (Exception e) {
 				// TODO: handle exception
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 
 		}
@@ -60,16 +60,21 @@ public class Runner {
 			JsonParser jsonParser = new JsonParser();
 			JsonElement jsonTree = jsonParser.parse(searchHits[0].getSourceAsString());
 			
-			int nameval = FuzzySearch.ratio(name, jsonTree.getAsJsonObject().get("name").getAsString());
+			String Name_es = jsonTree.getAsJsonObject().get("name").getAsString();
+			String Name_es_lower = Name_es.toLowerCase().replaceAll("[a-z]/[a-z] ", "").replace("my ", "");;
+			
+			String toLowername = name.toLowerCase().replaceAll("[a-z]/[a-z] ", "").replace("my ", "");
+			int nameval = FuzzySearch.ratio(toLowername, Name_es_lower);
+			//System.out.println(Name_es_lower+"   "+toLowername+"   "+nameval);
 			//int yearVal = FuzzySearch.ratio(year, jsonTree.getAsJsonObject().get("year").getAsString());
 			//int builderVal = FuzzySearch.ratio(builder, jsonTree.getAsJsonObject().get("builder").getAsString());
 			
-			if(nameval > 90) {
-				System.out.println("DataBase Record  "+id+"  "+name+"   "+year+"  "+builder);
+			if(nameval > 85) {
+				//System.out.println("DataBase Record  "+id+"  "+name+"   "+year+"  "+builder);
 
-				System.out.println(searchHits[0].getScore()+"  "+jsonTree.getAsJsonObject().get("name").getAsString()+"   "+jsonTree.getAsJsonObject().get("builder").getAsString()+"  "+jsonTree.getAsJsonObject().get("year").getAsString());
+				//System.out.println(searchHits[0].getScore()+"  "+jsonTree.getAsJsonObject().get("name").getAsString()+"   "+jsonTree.getAsJsonObject().get("builder").getAsString()+"  "+jsonTree.getAsJsonObject().get("year").getAsString());
 
-				System.out.println(searchHits[0].getId());
+				//System.out.println(searchHits[0].getId());
 				
 				Map<String, Object> jsonMap = new HashMap<>();
 				
@@ -78,16 +83,24 @@ public class Runner {
 				jsonMap.put("name", jsonTree.getAsJsonObject().get("name").getAsString());
 				jsonMap.put("year", jsonTree.getAsJsonObject().get("year").getAsString());
 				jsonMap.put("builder", jsonTree.getAsJsonObject().get("builder").getAsString());
+				jsonMap.put("beam", jsonTree.getAsJsonObject().get("beam").getAsString());
+				jsonMap.put("draft", jsonTree.getAsJsonObject().get("draft_max").getAsString());
+				jsonMap.put("manufacturer", jsonTree.getAsJsonObject().get("manufacturer").getAsString());
 				jsonMap.put("source", "manual_crew");
+				
 				
 				Runner.pushElastic(jsonMap);
 
 				
 			}
-			
-			//System.err.println();
-			
-			
+						
+		
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
@@ -103,9 +116,10 @@ public class Runner {
 		
 		try {
 			client.index(indexRequest, RequestOptions.DEFAULT);
+			client.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 	}
